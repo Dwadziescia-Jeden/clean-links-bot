@@ -24,7 +24,7 @@ def sanitize_log_value(s: str) -> str:
     if not isinstance(s, str):
         s = str(s)
     return s.replace('\r\n', '').replace('\n', '').replace('\r', '')
-BOT_VERSION = "0.0.2"
+BOT_VERSION = "0.0.3"
 
 # Per-chat config: whether to delete original messages
 DELETE_ORIGINAL_BY_CHAT: dict[int, bool] = {}

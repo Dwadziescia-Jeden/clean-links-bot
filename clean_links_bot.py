@@ -268,6 +268,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # ---- Per-chat behavior: delete original or not ----
     delete_original = DELETE_ORIGINAL_BY_CHAT.get(message.chat_id, False)
 
+    thread_id = getattr(message, "message_thread_id", None)
+
     if delete_original:
         # Try to delete original, then post cleaned as a fresh message
         try:
@@ -278,6 +280,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.send_message(
             chat_id=message.chat_id,
             text=final_text,
+            message_thread_id=thread_id,
         )
     else:
         # Default: keep original and reply with cleaned version

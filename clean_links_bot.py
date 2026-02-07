@@ -24,7 +24,7 @@ def sanitize_log_value(s: str) -> str:
     if not isinstance(s, str):
         s = str(s)
     return s.replace('\r\n', '').replace('\n', '').replace('\r', '')
-BOT_VERSION = "0.0.3"
+BOT_VERSION = "0.0.4"
 
 # Per-chat config: whether to delete original messages
 DELETE_ORIGINAL_BY_CHAT: dict[int, bool] = {}
@@ -85,6 +85,10 @@ TWITTER_HOSTS = {
     "mobile.twitter.com",
     "x.com",
     "www.x.com",
+}
+
+SPOTIFY_HOSTS = {
+    "open.spotify.com",
 }
 
 # For YouTube, we keep only parameters that actually affect video playback.
@@ -155,6 +159,11 @@ def clean_twitter(parsed: ParseResult) -> str:
     return urlunparse(parsed._replace(query=""))
 
 
+def clean_spotify(parsed: ParseResult) -> str:
+    # For Spotify, drop all query params (si is tracking, no functional params needed)
+    return urlunparse(parsed._replace(query=""))
+
+
 def clean_url(url: str) -> str:
     try:
         parsed = urlparse(url)
@@ -167,8 +176,10 @@ def clean_url(url: str) -> str:
         return clean_youtube(parsed)
     if host in TWITTER_HOSTS:
         return clean_twitter(parsed)
+    if host in SPOTIFY_HOSTS:
+        return clean_spotify(parsed)
 
-    # Not YouTube or Twitter/X -> leave unchanged
+    # Not YouTube, Twitter/X, or Spotify -> leave unchanged
     return url
 
 
@@ -297,14 +308,14 @@ async def ping(update, context):
 async def help_command(update, context):
     HELP_TEXT = (
         "🤖 *Pomoc Clean Links Bot*\n\n"
-        "Ten bot skanuje wiadomości pod kątem linków do YouTube oraz Twitter/X i usuwa z nich zbędne lub śledzące parametry.\n"
+        "Ten bot skanuje wiadomości pod kątem linków do YouTube, Twitter/X oraz Spotify i usuwa z nich zbędne lub śledzące parametry.\n"
         "Jeśli link da się oczyścić, bot odpowiada w wątku z oczyszczoną wersją oraz zabawnym intro.\n\n"
         "*Komendy:*\n"
         "/ping – Sprawdź czy bot żyje i poznaj jego wersję\n"
         "/help – Wyświetl tę pomoc\n\n"
         "*Jak działa bot:*\n"
         "- Działa tylko na czatach grupowych\n"
-        "- Automatycznie odpowiada, jeśli wykryje możliwy do poprawienia link do YouTube lub Twitter/X\n"
+        "- Automatycznie odpowiada, jeśli wykryje możliwy do poprawienia link do YouTube, Twitter/X lub Spotify\n"
         "- Podaje autora oryginalnej wiadomości\n"
         "- Używa pamięci podręcznej, by nie odpowiadać dwa razy na ten sam komunikat\n"
     )

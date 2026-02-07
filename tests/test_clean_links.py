@@ -124,3 +124,24 @@ def test_extract_urls_with_text_link():
 
     assert len(urls) == 1
     assert urls[0][0] == "https://x.com/user/status/123?s=20"
+
+
+def test_spotify_track_strips_si():
+    url = "https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC?si=abc123def456"
+    cleaned = clean_url(url)
+    assert cleaned == "https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC"
+    assert "si=" not in cleaned
+
+
+def test_spotify_album_strips_all_params():
+    url = "https://open.spotify.com/album/1DFixLWuPkv3KT3TnV35m3?si=xyz789&utm_source=copy"
+    cleaned = clean_url(url)
+    assert cleaned == "https://open.spotify.com/album/1DFixLWuPkv3KT3TnV35m3"
+    assert "?" not in cleaned
+
+
+def test_spotify_playlist_strips_si():
+    url = "https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M?si=abc123"
+    cleaned = clean_url(url)
+    assert cleaned == "https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M"
+    assert "?" not in cleaned

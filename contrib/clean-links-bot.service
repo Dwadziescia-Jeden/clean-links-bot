@@ -8,7 +8,7 @@ Type=simple
 User=bot
 WorkingDirectory=/home/bot/clean-links-bot
 EnvironmentFile=/etc/clean-links-bot.env
-ExecStart=/home/bot/clean-links-bot/.venv/bin/python clean_links_bot.py
+ExecStart=/home/bot/clean-links-bot/.venv/bin/python /home/bot/clean-links-bot/clean_links_bot.py
 Restart=on-failure
 RestartSec=5
 
